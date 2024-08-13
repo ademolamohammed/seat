@@ -1,0 +1,213 @@
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <link rel="stylesheet" href="/webjars/bootstrap/5.1.3/css/bootstrap.min.css">-->
+<!--    <title>Seat Reservation</title>-->
+<!--    <style>-->
+<!--        .seat {-->
+<!--            display: inline-block;-->
+<!--            width: 50px;-->
+<!--            height: 50px;-->
+<!--            margin: 5px;-->
+<!--            text-align: center;-->
+<!--            line-height: 50px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--        .available {-->
+<!--            background-color: #dff0d8;-->
+<!--        }-->
+<!--        .reserved {-->
+<!--            background-color: #f2dede;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container mt-5">-->
+<!--    <h1 class="text-center">Seat Reservation System</h1>-->
+<!--    <p class="text-center">Seats Remaining: <strong th:text="${remainingSeats}"></strong></p>-->
+
+<!--    <table class="table table-bordered">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>Seat Code</th>-->
+<!--            <th>Status</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="seat : ${seats}">-->
+<!--            <td th:text="${seat}"></td>-->
+<!--            <td>-->
+<!--                <span th:if="${#lists.contains(reservedSeats, seat)}" th:text="${reservedSeats[seat].customerName}">Reserved</span>-->
+<!--                <span th:unless="${#lists.contains(reservedSeats, seat)}">Empty</span>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+
+<!--    <form th:action="@{/reserve}" method="post">-->
+<!--        <div class="mb-3">-->
+<!--            <label for="seatCode" class="form-label">Seat Code</label>-->
+<!--            <input type="text" class="form-control" id="seatCode" name="seatCode" required>-->
+<!--        </div>-->
+<!--        <div class="mb-3">-->
+<!--            <label for="customerName" class="form-label">Customer Name</label>-->
+<!--            <input type="text" class="form-control" id="customerName" name="customerName" required>-->
+<!--        </div>-->
+<!--        <div class="mb-3">-->
+<!--            <label for="tdate" class="form-label">Transaction Date</label>-->
+<!--            <input type="date" class="form-control" id="tdate" name="tdate">-->
+<!--        </div>-->
+<!--        <button type="submit" class="btn btn-primary">Reserve</button>-->
+<!--    </form>-->
+
+<!--        <table class="table">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--                <th>Seat Code</th>-->
+<!--                <th>Customer Name</th>-->
+<!--                <th>Transaction Date</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr th:each="seat : ${seatz}">-->
+<!--                <td th:text="${seat.seatCode}"></td>-->
+<!--                <td th:text="${seat.customerName}"></td>-->
+<!--                <td th:text="${seat.tdate}"></td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+
+<!--    <script th:inline="javascript">-->
+<!--        /*<![CDATA[*/-->
+<!--        var message = /*[[${message}]]*/ ' ';-->
+<!--        if (message.trim() !== '') {-->
+<!--            alert(message);-->
+<!--        }-->
+<!--        /*]]>*/-->
+<!--    </script>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/webjars/bootstrap/5.1.3/css/bootstrap.min.css">
+    <title>Seat Reservation</title>
+    <style>
+        .seat {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            text-align: center;
+            line-height: 50px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .available {
+            background-color: #dff0d8;
+        }
+        .reserved {
+            background-color: #f2dede;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center">Seat Reservation System</h1>
+
+    <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Seat Code</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="seat : ${seats}">
+                    <td th:text="${seat}"></td>
+                    <td>
+                        <span th:if="${#lists.contains(reservedSeats, seat)}" th:text="${reservedSeats[seat].customerName}">Reserved</span>
+                        <span th:unless="${#lists.contains(reservedSeats, seat)}">Empty</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+    <p class="text-center">Seats are: <strong th:text="${remainingSeats}"> renaining seats</strong></p>
+    <div  th:if="${editSeat != null}">
+        <h2>Edit Seat</h2>
+        <form class="w-50 m-auto" th:action="@{/update}" method="post">
+            <input type="hidden" name="id" th:value="${editSeat.id}">
+            <div class="mb-3">
+                <label for="seatCodeEdit" class="form-label">Seat Code</label>
+                <input type="text" class="form-control" id="seatCodeEdit" name="seatCode" th:value="${editSeat.seatCode}" required>
+            </div>
+            <div class="mb-3">
+                <label for="customerNameEdit" class="form-label">Customer Name</label>
+                <input type="text" class="form-control" id="customerNameEdit" name="customerName" th:value="${editSeat.customerName}" required>
+            </div>
+            <div class="mb-3">
+                <label for="tdateEdit" class="form-label">Transaction Date</label>
+                <input type="date" class="form-control" id="tdateEdit" name="tdate" th:value="${editSeat.tdate}">
+            </div>
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+    </div>
+
+    <form th:action="@{/reserve}" method="post">
+        <div class="mb-3">
+            <label for="seatCode" class="form-label">Seat Code</label>
+            <input type="text" class="form-control" id="seatCode" name="seatCode" required>
+        </div>
+        <div class="mb-3">
+            <label for="customerName" class="form-label">Customer Name</label>
+            <input type="text" class="form-control" id="customerName" name="customerName" required>
+        </div>
+        <div class="mb-3">
+            <label for="tdate" class="form-label">Transaction Date</label>
+            <input type="date" class="form-control" id="tdate" name="tdate">
+        </div>
+        <button type="submit" class="btn btn-primary">Reserve</button>
+    </form>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Seat Code</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="seat : ${seatz}">
+            <td th:text="${seat.seatCode}"></td>
+            <td th:text="${seat.customerName}"></td>
+            <td th:text="${seat.tdate}"></td>
+            <td>
+                <form th:action="@{/delete}" method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${seat.id}">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+                <a th:href="@{/edit/{id}(id=${seat.id})}" class="btn btn-warning btn-sm">Edit</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var message = /*[[${message}]]*/ ' ';
+        if (message.trim() !== '') {
+            alert(message);
+        }
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>
